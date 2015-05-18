@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Arqiva - Tap Sensor Demo</title>
+	
+	
+	<!-- jQuery -->
+    <script src="js/jquery.js"></script>
+	<!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+	<!--Datepicker requirements -->
+	<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/2.9.0/moment.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/1/daterangepicker.js"></script>
+	
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/sb-admin.css" rel="stylesheet">
+	<!--Datepicker CSS -->
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/1/daterangepicker-bs3.css" />
+	
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+	<script type="text/javascript">
+											
+	function generateChart(chart_name, div, xdataSet, t1, t2, t3, t4){
+	
+			chart_name = new Highcharts.Chart({
+				chart: {
+					renderTo: div,
+					type: 'areaspline'
+				},
+				title: {
+					text: 'Tap Water Temperature'
+				},
+				
+				xAxis: {
+					categories: xdataSet,
+					tickmarkPlacement: 'on',
+					tickInterval: 6,
+					title: {
+						enabled: false
+					},
+					labels: {
+						rotation: -45,
+						style: {
+							fontSize: 8
+						}
+					},
+				},
+				yAxis: {
+					title: {
+						text: 'Temperature'
+					}
+				},
+				tooltip: {
+					shared: true,
+					valueSuffix: '\xB0C'
+				},
+				plotOptions: {
+					area: {
+						stacking: 'normal',
+						lineColor: '#666666',
+						lineWidth: 1,
+						marker: {
+							lineWidth: 1,
+							lineColor: '#666666'
+						}
+					}
+				},
+				series: [{
+					name: 'Hot Max',
+					color: '#d9534f',
+					data: t1
+				}, {
+					name: 'Hot Min',
+					color: '#f0ad4e',
+					data: t2
+				}, {
+					name: 'Col Max',
+					color: '#5cb85c',
+					data: t3
+				}, {
+					name: 'Cold Min',
+					data: t4
+				}]
+			});
+		}
+		
+		function generateChartData(date1, date2){
+			//alert('re-draw chart with : ' + date1 + ' ' + date2);
+			
+			var date_time_array = new Array();
+			var temp1_array = new Array();
+			var temp2_array = new Array();
+			var temp3_array = new Array();
+			var temp4_array = new Array();
+			var divName = "chart1";
+			var chName = "temperature";
+			var api_url = "api/request_data2.php?date1=" + date1 + "&date2=" + date2
+			$.getJSON( api_url, function( data ) {
+						for (var i=0; i<data.length; i++){
+							date_time_array.push(data[i].date_time);
+							temp1_array.push(data[i].temp1 * 1);
+							temp2_array.push(data[i].temp2 * 1);
+							temp3_array.push(data[i].temp3 * 1);
+							temp4_array.push(data[i].temp4 * 1);
+						}
+						generateChart(chName, divName, date_time_array, temp1_array, temp2_array, temp3_array, temp4_array);
+						//alert('returned data array ' + date_time_array)
+			});		
+		}
+	</script>
+	
+	<script src="js/highcharts.js"></script>
+	<script src="js/modules/exporting.js"></script>
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand top-nav" href="index.html"><img src="images/logo.png" border="0"></a>
+            </div>
+           
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li class="active">
+                        <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
+                    </li>
+                    <li>
+                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
+                    </li>
+					 <li>
+                        <a href="#"><i class="fa fa-fw fa-bell"></i> Alarms</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Tap Sensor Dashboard
+                        </h1>
+                       
+                    </div>
+                </div>
+                <!-- /.row -->
+				
+				<script>
+						
+					$.getJSON("api/request_data.php", function(result){
+						$.each(result, function(i, field){
+							$("#"+i).text(field + "\xB0C");		
+						});
+					});
+						
+					var date_time_array = new Array();
+					var temp1_array = new Array();
+					var temp2_array = new Array();
+					var temp3_array = new Array();
+					var temp4_array = new Array();
+					var divName = "chart1";
+					var chName = "temperature";
+					$.getJSON( "api/request_data2.php", function( data ) {
+						for (var i=0; i<data.length; i++){
+							date_time_array.push(data[i].date_time);
+							temp1_array.push(data[i].temp1 * 1);
+							temp2_array.push(data[i].temp2 * 1);
+							temp3_array.push(data[i].temp3 * 1);
+							temp4_array.push(data[i].temp4 * 1);
+						}
+						generateChart(chName, divName, date_time_array, temp1_array, temp2_array, temp3_array, temp4_array);
+					});
+				
+				</script>
+				
+				
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-red">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <div class="medium">Hot Pipe Maximum</div>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <div id="temp1" class="huge"></div>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-yellow">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <div class="medium">Hot Pipe Minimum:</div>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <div id="temp2" class="huge"></div>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-green">
+                            <div class="panel-heading">
+                                <div class="row">
+                                   <div class="col-md-6 text-center">
+                                        <div class="medium">Cold Pipe Maximum:</div>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <div id="temp3" class="huge"></div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="row">
+                                   <!--<div class="col-xs-3">
+                                        <div>Low Temp Min:</div>
+                                    </div>-->
+									<div class="col-md-6 text-center">
+                                        <div class="medium">Cold Pipe Minimum:</div>
+                                    </div>
+									 <div class="col-md-3 text-center">
+                                        <div id="temp4" class="huge"></div>
+                                    </div>
+                                    <!--<div class="col-xs-9 text-right">
+                                        <div class="huge">21&deg;C</div>
+                                        
+                                    </div>-->
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+				
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Temperature Chart</h3>
+                            </div>
+							
+                            <div class="panel-body">
+								<div class="row">
+									<div class="col-md-2 pull-left">
+										<i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp&nbsp<input id="dateselection" type="text" name="daterange" value="" />
+										&nbsp&nbsp&nbsp <i class="glyphicon glyphicon-calendar fa fa-filter"></i>
+									</div>
+								
+									<script type="text/javascript">
+										var dates = [];
+										$.getJSON("api/request_date.php", function(data){		
+											$.each( data, function( key, val ) {
+												dates.push(val);
+											});
+											
+											$(function() {
+												$('input[name="daterange"]').daterangepicker({
+													format: 'YYYY-MM-DD',
+													minDate: dates[0],
+													maxDate: dates[1],
+													dateLimit: { days: 30 },
+													ranges: {
+													   'Today': [moment(), moment()],
+													   'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+													   'Last 7 Days': [moment().subtract(6, 'days'), moment()]
+													},
+												});
+											});
+										});
+										
+										$("input").change(function(){
+											selectedDate = $("#dateselection").val();
+											d1 = selectedDate.substring(0, 10);
+											d2 = selectedDate.substring(13);
+											//alert("Date1 is  : " + d1 + " Date 2 is: " + d2);
+											generateChartData(d1, d2);
+										});
+	
+										
+									</script>
+								
+								</div>
+								<br/>
+									
+                                <div id="chart1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+              
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+</body>
+
+</html>

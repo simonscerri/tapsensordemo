@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Arqiva - Tap Sensor Demo</title>
+	
+	
+	<!-- jQuery -->
+    <script src="js/jquery.js"></script>
+	<!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+	<!-- Datepicker Core JavaScript -->
+	<script src="datepicker/js/bootstrap-datepicker.min.js"></script>
+
+	
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/sb-admin.css" rel="stylesheet">
+	<!-- Bootstrap Date Picker Core CSS -->
+	<link href="datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet">
+	<link href="datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+	<script>
+	
+		
+	</script>
+	
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand top-nav" href="index.html"><img src="images/logo.png" border="0"></a>
+            </div>
+           
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li class="active">
+                        <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
+                    </li>
+                    <li>
+                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
+                    </li>
+					 <li>
+                        <a href="#"><i class="fa fa-fw fa-bell"></i> Alarms</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Tap Sensor Dashboard
+                        </h1>
+                       
+                    </div>
+                </div>
+                <!-- /.row -->
+				
+				<script>
+					 var db;
+					//database varsion setting
+					var version = 1.0;
+					//database name setting
+					var dbName = "tizendb";
+					//database display name setting
+					var dbDisplayName = "tizen_test_db";
+					//database size setting
+					var dbSize = 2 * 1024 * 1024;
+
+					function selectDB() {
+						if (window.openDatabase) {
+							//openDatabase(name, version, displayname, estimatedsize, callback);
+							db = openDatabase(dbName, version, dbDisplayName, dbSize);
+
+							dropTable(db);
+							createTable(db);
+
+							//inserting data in table
+							insertData(db, "tizenTest01", "hello world 1");
+						   
+							dataView(db);
+
+						} else {
+							alert("Web SQL Database not supported in this browser");
+						}
+					}
+					
+					
+					$.getJSON("api/request_data.php", function(result){
+						$.each(result, function(i, field){
+							$("#"+i).text(field + "\xB0C");		
+						});
+					});
+					
+					
+				
+				</script>
+				
+				
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-red">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <div class="medium">Hot Pipe Maximum</div>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <div id="temp1" class="huge"></div>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-yellow">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <div class="medium">Hot Pipe Minimum:</div>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <div id="temp2" class="huge"></div>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-green">
+                            <div class="panel-heading">
+                                <div class="row">
+                                   <div class="col-md-6 text-center">
+                                        <div class="medium">Cold Pipe Maximum:</div>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <div id="temp3" class="huge"></div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="row">
+                                   <!--<div class="col-xs-3">
+                                        <div>Low Temp Min:</div>
+                                    </div>-->
+									<div class="col-md-6 text-center">
+                                        <div class="medium">Cold Pipe Minimum:</div>
+                                    </div>
+									 <div class="col-md-3 text-center">
+                                        <div id="temp4" class="huge"></div>
+                                    </div>
+                                    <!--<div class="col-xs-9 text-right">
+                                        <div class="huge">21&deg;C</div>
+                                        
+                                    </div>-->
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+				
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-bar-chart-o fa-fw"></i> Temperature Chart</h3>
+                            </div>
+							
+                            <div class="panel-body">
+								<!--include left align-->
+								
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+
+              
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+</body>
+
+</html>
